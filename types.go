@@ -7,8 +7,8 @@ type project struct {
 }
 
 type prize struct {
-	name string
-	cost uint
+	Name string `json:"name"`
+	Cost uint   `json:"cost"`
 }
 
 type mode string

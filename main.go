@@ -93,16 +93,16 @@ func main() {
 				Border(lipgloss.NormalBorder()).
 				BorderForeground(lipgloss.Color("57"))
 
-			if totalDoubloons >= uint64(selectedPrize.cost) {
-				msg := fmt.Sprintf("You can afford %s!", selectedPrize.name)
+			if totalDoubloons >= uint64(selectedPrize.Cost) {
+				msg := fmt.Sprintf("You can afford %s!", selectedPrize.Name)
 				fmt.Println(messageStyle.Render(msg))
 			} else {
-				doubloonsNeeded := uint64(selectedPrize.cost) - totalDoubloons
+				doubloonsNeeded := uint64(selectedPrize.Cost) - totalDoubloons
 				hoursNeeded := float64(doubloonsNeeded) / averageHourlyRate
 				msg := fmt.Sprintf("To afford %s, you need:\n"+
 					"•   %d more doubloons\n"+
 					"•   ≈%.1f more hours ",
-					selectedPrize.name, doubloonsNeeded, hoursNeeded)
+					selectedPrize.Name, doubloonsNeeded, hoursNeeded)
 				fmt.Println(messageStyle.Render(msg))
 			}
 			fmt.Println("\nPress Enter to continue...")

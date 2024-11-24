@@ -25,3 +25,13 @@ func loadProjects() ([]project, error) {
 	err = json.Unmarshal(data, &projects)
 	return projects, err
 }
+
+func loadPrizes() ([]prize, error) {
+	data, err := os.ReadFile("prizes.json")
+	if err != nil {
+		return nil, err
+	}
+	var prizes []prize
+	err = json.Unmarshal(data, &prizes)
+	return prizes, err
+}

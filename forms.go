@@ -64,19 +64,28 @@ func newProject() (project, error) {
 func prizeSelection() (prize, error) {
 	var selectedPrize prize
 
+	loadedPrizes, err := loadPrizes()
+	if err != nil {
+		return prize{}, err
+	}
+
+	prizes := make([]huh.Option[prize], len(loadedPrizes))
+
+	for i, p := range loadedPrizes {
+		prizes[i] = huh.NewOption(p.Name, p)
+	}
+
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[prize]().
 				Title("Choose your prize").
-				Options(
-					huh.NewOption("Prize 1", prize{"Prize 1", 100}),
-					huh.NewOption("Prize 2", prize{"Prize 2", 200}),
-				).
+				Options(prizes...).
+				Height(10).
 				Value(&selectedPrize),
 		),
 	)
 
-	err := form.Run()
+	err = form.Run()
 	if err != nil {
 		return prize{}, err
 	}
