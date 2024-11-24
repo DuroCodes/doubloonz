@@ -1,5 +1,9 @@
 # Doubloonz
 
+<div align="center">
+  <img src="./logo.png" width="400" />
+</div>
+
 Doubloonz is a CLI tool that helps you determine when you'll be able to use your doubloons to purchase a prize from the doubloon shop. **Heavily** inspired by another project, [Doubloon Project Ranker](https://doubloon-project-ranker.vercel.app/).
 
 The prizes within `prizes.json` include the prizes for the US (🇺🇸🦅) shop, so it might be slightly different for other regions.
