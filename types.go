@@ -6,6 +6,11 @@ type project struct {
 	Hours     float64 `json:"hours"`
 }
 
+type storage struct {
+	Region    string    `json:"region"`
+	Projects  []project `json:"projects"`
+}
+
 type prize struct {
 	Name string `json:"name"`
 	Cost uint   `json:"cost"`
@@ -18,5 +23,6 @@ const (
 	modeDelete     mode = "Delete Project"
 	modeEdit       mode = "Edit Project"
 	modePrize      mode = "Select Prize"
+	modeRegion     mode = "Change Region"
 	modeExit       mode = "Exit"
 )

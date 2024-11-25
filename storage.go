@@ -5,33 +5,48 @@ import (
 	"os"
 )
 
-func saveProjects(projects []project) error {
-	data, err := json.Marshal(projects)
+func saveProjects(store storage) error {
+	data, err := json.Marshal(store)
 	if err != nil {
 		return err
 	}
 	return os.WriteFile("projects.json", data, 0644)
 }
 
-func loadProjects() ([]project, error) {
+func loadProjects() (storage, error) {
 	data, err := os.ReadFile("projects.json")
 	if err != nil {
 		if os.IsNotExist(err) {
-			return []project{}, nil
+			return storage{Region: "US", Projects: []project{}}, nil
 		}
-		return nil, err
+		return storage{}, err
 	}
-	var projects []project
-	err = json.Unmarshal(data, &projects)
-	return projects, err
+
+	var store storage
+	err = json.Unmarshal(data, &store)
+	if err == nil && store.Region != "" {
+		return store, nil
+	}
+
+	// backwards compat
+	var oldProjects []project
+	err = json.Unmarshal(data, &oldProjects)
+	if err == nil {
+		return storage{
+			Region:   "US",
+			Projects: oldProjects,
+		}, nil
+	}
+
+	return storage{}, err
 }
 
-func loadPrizes() ([]prize, error) {
+func loadPrizes() (map[string][]prize, error) {
 	data, err := os.ReadFile("prizes.json")
 	if err != nil {
 		return nil, err
 	}
-	var prizes []prize
+	var prizes map[string][]prize
 	err = json.Unmarshal(data, &prizes)
 	return prizes, err
 }

@@ -19,7 +19,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	projects, err := loadProjects()
+	state, err := loadProjects()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +27,7 @@ func main() {
 	var totalDoubloons uint64
 	var totalHours float64
 
-	for _, p := range projects {
+	for _, p := range state.Projects {
 		totalDoubloons += p.Doubloons
 		totalHours += p.Hours
 	}
@@ -35,7 +35,7 @@ func main() {
 	for {
 		fmt.Print("\033[H\033[2J")
 
-		if len(projects) == 0 {
+		if len(state.Projects) == 0 {
 			displayProjects([]project{
 				{
 					Name:      "No projects yet!",
@@ -45,9 +45,11 @@ func main() {
 			})
 		}
 
-		if len(projects) > 0 {
-			displayProjects(projects)
+		if len(state.Projects) > 0 {
+			displayProjects(state.Projects)
 		}
+
+		fmt.Printf("Current region: %s\n\n", state.Region)
 
 		selectedMode, err := selectMode()
 		if err != nil {
@@ -60,29 +62,29 @@ func main() {
 			if err != nil {
 				continue
 			}
-			projects = append(projects, project)
+			state.Projects = append(state.Projects, project)
 			totalDoubloons += project.Doubloons
 			totalHours += project.Hours
-			saveProjects(projects)
+			saveProjects(state)
 
 		case modeDelete:
-			if newProjects, ok := deleteProject(projects); ok {
+			if newProjects, ok := deleteProject(state.Projects); ok {
 				totalDoubloons = 0
 				totalHours = 0
 				for _, p := range newProjects {
 					totalDoubloons += p.Doubloons
 					totalHours += p.Hours
 				}
-				projects = newProjects
-				saveProjects(projects)
+				state.Projects = newProjects
+				saveProjects(state)
 			}
 
 		case modePrize:
-			if len(projects) == 0 {
+			if len(state.Projects) == 0 {
 				fmt.Println("Add some projects first!")
 				continue
 			}
-			selectedPrize, err := prizeSelection()
+			selectedPrize, err := prizeSelection(state.Region)
 			if err != nil {
 				continue
 			}
@@ -109,7 +111,7 @@ func main() {
 			fmt.Scanln()
 
 		case modeEdit:
-			if newProjects, ok := editProject(projects); ok {
+			if newProjects, ok := editProject(state.Projects); ok {
 				totalDoubloons = 0
 				totalHours = 0
 				for _, p := range newProjects {
@@ -117,8 +119,18 @@ func main() {
 					totalHours += p.Hours
 				}
 
-				projects = newProjects
-				saveProjects(projects)
+				state.Projects = newProjects
+				saveProjects(state)
+			}
+
+		case modeRegion:
+			newRegion, err := selectRegion(state.Region)
+			if err != nil {
+				continue
+			}
+			if newRegion != state.Region {
+				state.Region = newRegion
+				saveProjects(state)
 			}
 
 		case modeExit:

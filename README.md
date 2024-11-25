@@ -6,7 +6,7 @@
 
 Doubloonz is a CLI tool that helps you determine when you'll be able to use your doubloons to purchase a prize from the doubloon shop. **Heavily** inspired by another project, [Doubloon Project Ranker](https://doubloon-project-ranker.vercel.app/).
 
-The prizes within `prizes.json` include the prizes for the US (🇺🇸🦅) shop, so it might be slightly different for other regions.
+You can choose your region within the CLI, so the prizes will be accurate for your region. (Unless I messed up making the prizes, but I don't think I did)
 
 I'm not personally a big fan of the [Go](https://golang.org/) programming language, but I really like the [Charm](https://github.com/charmbracelet) libraries for CLI tools. Go is kind of growing on me, though.
 

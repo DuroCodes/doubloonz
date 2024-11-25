@@ -61,7 +61,7 @@ func newProject() (project, error) {
 	}, nil
 }
 
-func prizeSelection() (prize, error) {
+func prizeSelection(region string) (prize, error) {
 	var selectedPrize prize
 
 	loadedPrizes, err := loadPrizes()
@@ -69,9 +69,8 @@ func prizeSelection() (prize, error) {
 		return prize{}, err
 	}
 
-	prizes := make([]huh.Option[prize], len(loadedPrizes))
-
-	for i, p := range loadedPrizes {
+	prizes := make([]huh.Option[prize], len(loadedPrizes[region]))
+	for i, p := range loadedPrizes[region] {
 		prizes[i] = huh.NewOption(p.Name, p)
 	}
 
@@ -212,6 +211,7 @@ func selectMode() (mode, error) {
 					huh.NewOption("Edit Project", modeEdit),
 					huh.NewOption("Delete Project", modeDelete),
 					huh.NewOption("Select Prize", modePrize),
+					huh.NewOption("Change Region", modeRegion),
 					huh.NewOption("Exit", modeExit),
 				).
 				Filtering(false).
@@ -225,4 +225,29 @@ func selectMode() (mode, error) {
 	}
 
 	return selectedMode, nil
+}
+
+func selectRegion(currentRegion string) (string, error) {
+	var selectedRegion string = currentRegion
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().
+				Title("Choose region").
+				Options(
+					huh.NewOption("United States", "US"),
+					huh.NewOption("European Union", "EU"),
+					huh.NewOption("India", "IN"),
+					huh.NewOption("Canada", "CA"),
+				).
+				Value(&selectedRegion),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		return currentRegion, err
+	}
+
+	return selectedRegion, nil
 }
