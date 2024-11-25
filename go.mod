@@ -1,4 +1,4 @@
-module durocodes/doubloonz
+module github.com/durocodes/doubloonz
 
 go 1.22.4
 
