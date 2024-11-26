@@ -239,6 +239,7 @@ func selectRegion(currentRegion string) (string, error) {
 					huh.NewOption("European Union", "EU"),
 					huh.NewOption("India", "IN"),
 					huh.NewOption("Canada", "CA"),
+					huh.NewOption("Worldwide", "WW"),
 				).
 				Value(&selectedRegion),
 		),

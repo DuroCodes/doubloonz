@@ -15,6 +15,13 @@ I'm not personally a big fan of the [Go](https://golang.org/) programming langua
 
 ## Usage
 
+> [!TIP]
+> You can use `go install github.com/durocodes/doubloonz@latest` to install the binary to your `$GOPATH/bin` without manually building
+
 1. Clone the repository
 2. Run `go build` to build the binary
 3. Run `./doubloonz` (or `./doubloonz.exe` on Windows) to start the CLI
+
+## Updating Prizes
+
+If the prizes change, create a file called `data.html`, and copy/paste the HTML from the shop page, and you can use the `scraper.py` script to print out the prizes in a format that can be copied into the `prizes.json` file.

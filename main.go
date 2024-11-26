@@ -58,13 +58,13 @@ func main() {
 
 		switch selectedMode {
 		case modeAddProject:
-			project, err := newProject()
+			newProj, err := newProject()
 			if err != nil {
 				continue
 			}
-			state.Projects = append(state.Projects, project)
-			totalDoubloons += project.Doubloons
-			totalHours += project.Hours
+			state.Projects = append([]project{newProj}, state.Projects...)
+			totalDoubloons += newProj.Doubloons
+			totalHours += newProj.Hours
 			saveProjects(state)
 
 		case modeDelete:
@@ -96,7 +96,7 @@ func main() {
 				BorderForeground(lipgloss.Color("57"))
 
 			if totalDoubloons >= uint64(selectedPrize.Cost) {
-				msg := fmt.Sprintf("You can afford %s!", selectedPrize.Name)
+				msg := fmt.Sprintf("You can afford A %s!", selectedPrize.Name)
 				fmt.Println(messageStyle.Render(msg))
 			} else {
 				doubloonsNeeded := uint64(selectedPrize.Cost) - totalDoubloons
