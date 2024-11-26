@@ -334,7 +334,7 @@ func calculateMode(totalDoubloons uint64, totalHours float64) {
 		}
 
 		hours, _ := strconv.ParseFloat(targetHours, 64)
-		msg := fmt.Sprintf("%.2f  /hr * %.1f hours = %.0f ", avgRate, hours, hours*avgRate)
+		msg := fmt.Sprintf("%.2f  /hr × %.1f hours = %.0f ", avgRate, hours, hours*avgRate)
 
 		fmt.Println(messageStyle.Render(msg))
 	}
