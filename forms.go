@@ -2,9 +2,11 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func newProject() (project, error) {
@@ -28,7 +30,7 @@ func newProject() (project, error) {
 				Validate(func(str string) error {
 					_, err := strconv.ParseUint(str, 10, 32)
 					if err != nil {
-						return errors.New("hours must be a number")
+						return errors.New("doubloons must be a number")
 					}
 					return nil
 				}),
@@ -39,7 +41,7 @@ func newProject() (project, error) {
 				Validate(func(str string) error {
 					_, err := strconv.ParseFloat(str, 32)
 					if err != nil {
-						return errors.New("invalid hours")
+						return errors.New("hours must be a number")
 					}
 					return nil
 				}),
@@ -211,6 +213,7 @@ func selectMode() (mode, error) {
 					huh.NewOption("Edit Project", modeEdit),
 					huh.NewOption("Delete Project", modeDelete),
 					huh.NewOption("Select Prize", modePrize),
+					huh.NewOption("Calculate", modeCalc),
 					huh.NewOption("Change Region", modeRegion),
 					huh.NewOption("Exit", modeExit),
 				).
@@ -251,4 +254,91 @@ func selectRegion(currentRegion string) (string, error) {
 	}
 
 	return selectedRegion, nil
+}
+
+func calculateMode(totalDoubloons uint64, totalHours float64) {
+	avgRate := float64(totalDoubloons) / totalHours
+	if totalHours == 0 {
+		avgRate = 0
+	}
+
+	messageStyle := lipgloss.NewStyle().
+		Padding(0, 1).
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("57"))
+
+	var calcMode string
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[string]().
+				Title("What would you like to calculate?").
+				Options(
+					huh.NewOption("Hours needed for doubloons", "hours"),
+					huh.NewOption("Doubloons from hours", "doubloons"),
+				).
+				Value(&calcMode),
+		),
+	)
+
+	if err := form.Run(); err != nil {
+		return
+	}
+
+	switch calcMode {
+	case "hours":
+		var targetDoubloons string
+		hoursForm := huh.NewForm(
+			huh.NewGroup(
+				huh.NewInput().
+					Title("How many doubloons do you want?").
+					Validate(func(str string) error {
+						_, err := strconv.ParseUint(str, 10, 64)
+						if err != nil {
+							return errors.New("doubloons must be a number")
+						}
+						return nil
+					}).
+					Value(&targetDoubloons),
+			),
+		)
+
+		if err := hoursForm.Run(); err != nil {
+			return
+		}
+
+		target, _ := strconv.ParseUint(targetDoubloons, 10, 64)
+		hoursNeeded := float64(target) / avgRate
+
+		msg := fmt.Sprintf("%d  / ≈%.2f  /hr = %.1f hours", target, avgRate, hoursNeeded)
+		fmt.Println(messageStyle.Render(msg))
+
+	case "doubloons":
+		var targetHours string
+		doubloonForm := huh.NewForm(
+			huh.NewGroup(
+				huh.NewInput().
+					Title("How many hours will you work?").
+					Validate(func(str string) error {
+						_, err := strconv.ParseFloat(str, 64)
+						if err != nil {
+							return errors.New("invalid hours")
+						}
+						return nil
+					}).
+					Value(&targetHours),
+			),
+		)
+
+		if err := doubloonForm.Run(); err != nil {
+			return
+		}
+
+		hours, _ := strconv.ParseFloat(targetHours, 64)
+		msg := fmt.Sprintf("%.2f  /hr * %.1f hours = %.0f ", avgRate, hours, hours*avgRate)
+
+		fmt.Println(messageStyle.Render(msg))
+	}
+
+	fmt.Println("\nPress Enter to continue...")
+	fmt.Scanln()
 }

@@ -36,20 +36,21 @@ func main() {
 		fmt.Print("\033[H\033[2J")
 
 		if len(state.Projects) == 0 {
-			displayProjects([]project{
-				{
-					Name:      "No projects yet!",
-					Doubloons: 0,
-					Hours:     0,
+			displayProjects(storage{
+				Region: "US",
+				Projects: []project{
+					{
+						Name:      "No projects yet!",
+						Doubloons: 0,
+						Hours:     0,
+					},
 				},
 			})
 		}
 
 		if len(state.Projects) > 0 {
-			displayProjects(state.Projects)
+			displayProjects(state)
 		}
-
-		fmt.Printf("Current region: %s\n\n", state.Region)
 
 		selectedMode, err := selectMode()
 		if err != nil {
@@ -81,7 +82,6 @@ func main() {
 
 		case modePrize:
 			if len(state.Projects) == 0 {
-				fmt.Println("Add some projects first!")
 				continue
 			}
 			selectedPrize, err := prizeSelection(state.Region)
@@ -132,6 +132,9 @@ func main() {
 				state.Region = newRegion
 				saveProjects(state)
 			}
+
+		case modeCalc:
+			calculateMode(totalDoubloons, totalHours)
 
 		case modeExit:
 			os.Exit(0)

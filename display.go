@@ -6,16 +6,16 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func displayProjects(projects []project) {
+func displayProjects(state storage) {
 	columns := []table.Column{
-		{Title: "Project Name", Width: 30},
+		{Title: "Project Name", Width: 29}, // odd so the subtext can be cenetered
 		{Title: "Doubloons", Width: 15},
 		{Title: "Hours", Width: 12},
 		{Title: "Rate", Width: 20},
 	}
 
 	rows := []table.Row{}
-	for _, p := range projects {
+	for _, p := range state.Projects {
 		var rateStr string
 		if p.Hours == 0 {
 			rateStr = "N/A  /hr"
@@ -56,5 +56,26 @@ func displayProjects(projects []project) {
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("240"))
 
-	fmt.Println(baseStyle.Render(t.View()) + "\n")
+	totalDoubloons := uint64(0)
+	totalHours := float64(0)
+	for _, p := range state.Projects {
+		totalDoubloons += p.Doubloons
+		totalHours += p.Hours
+	}
+	avgRate := fmt.Sprintf("%.2f", float64(totalDoubloons)/totalHours)
+	if totalHours == 0 {
+		avgRate = "N/A"
+	}
+
+	tableWidth := lipgloss.Width(t.View())
+
+	subtextStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("241")).
+		Align(lipgloss.Center).
+		Width(tableWidth)
+
+	subtext := fmt.Sprintf("  %d •   %.2f • ≈%s  /hr •   %s\n", totalDoubloons, totalHours, avgRate, state.Region)
+
+	fmt.Println(baseStyle.Render(t.View()))
+	fmt.Println(subtextStyle.Render(subtext))
 }

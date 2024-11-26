@@ -7,8 +7,8 @@ type project struct {
 }
 
 type storage struct {
-	Region    string    `json:"region"`
-	Projects  []project `json:"projects"`
+	Region   string    `json:"region"`
+	Projects []project `json:"projects"`
 }
 
 type prize struct {
@@ -24,5 +24,6 @@ const (
 	modeEdit       mode = "Edit Project"
 	modePrize      mode = "Select Prize"
 	modeRegion     mode = "Change Region"
+	modeCalc       mode = "Calculate" // calc is short for calculator
 	modeExit       mode = "Exit"
 )
