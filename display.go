@@ -74,7 +74,7 @@ func displayProjects(state storage) {
 		Align(lipgloss.Center).
 		Width(tableWidth)
 
-	subtext := fmt.Sprintf("  %d •   hrs %.2f • ≈%s  /hr •   %s\n", totalDoubloons, totalHours, avgRate, state.Region)
+	subtext := fmt.Sprintf("%d   •   %.2f hrs • ≈%s  /hr •   %s\n", totalDoubloons, totalHours, avgRate, state.Region)
 
 	fmt.Println(baseStyle.Render(t.View()))
 	fmt.Println(subtextStyle.Render(subtext))
