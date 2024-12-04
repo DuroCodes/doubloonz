@@ -13,6 +13,10 @@ I'm not personally a big fan of the [Go](https://golang.org/) programming langua
 > [!WARNING]
 > This project uses [nerd fonts](https://www.nerdfonts.com/). Make sure you have one installed to see the icons for doubloons
 
+<div align="center">
+  <img src="./demo.png" width="600" />
+</div>
+
 ## Usage
 
 > [!TIP]
